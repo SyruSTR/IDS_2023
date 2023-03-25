@@ -118,6 +118,7 @@ CREATE TABLE Letenka (
 CREATE TABLE Spolecnost (
 
     DICH CHAR (10) NOT NULL PRIMARY KEY,
+    CHECK (upper(substr(DICH,1,2)) = 'CZ'),
 
     Nazev varchar(255) NOT NULL,
     logo VARCHAR(255)
@@ -248,6 +249,7 @@ CREATE TABLE Spolecnost_Letiste(
     FOREIGN KEY (l_cislo) REFERENCES Letiste (l_cislo)
 
 );
+
 
 INSERT ALL
     INTO Osoba VALUES ('1', 'Beren', 'Erhamion', 'Dortonion', TO_DATE('2000-06-10', 'YYYY-MM-DD'), 'Dorton', 'N')
