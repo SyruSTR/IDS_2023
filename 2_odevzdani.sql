@@ -1,3 +1,24 @@
+
+-- DROP TABLE LET cascade constraints;
+-- DROP TABLE LETADLO cascade constraints;
+-- DROP TABLE letenka cascade constraints;
+-- DROP TABLE letiste cascade constraints;
+-- DROP TABLE letovy_itinerar;
+-- DROP TABLE obec;
+-- DROP TABLE osoba cascade constraints ;
+-- DROP TABLE OSOBA_LETENKA;
+-- DROP TABLE PALUBNI_LISTEK cascade constraints;
+-- DROP TABLE PRIDANA_SLUZBA;
+-- DROP TABLE registrovana_osoba;
+-- DROP TABLE rezervace;
+-- DROP TABLE SEDADLO cascade constraints;
+-- DROP TABLE SEDADLO_PALUBNI_LISTEK;
+-- DROP TABLE SLUZBA;
+-- DROP TABLE SPOLECNOST cascade constraints;
+-- DROP TABLE SPOLECNOST_LETISTE;
+-- DROP TABLE TRIDA cascade constraints;
+-- DROP TABLE TRIDA_LETADLO;
+
 CREATE TABLE obec(
 
     o_cislo INTEGER PRIMARY KEY NOT NULL,
