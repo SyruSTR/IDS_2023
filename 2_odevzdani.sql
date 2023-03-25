@@ -1,33 +1,43 @@
-DROP obec CASCADE CONSTRAINTS;
-DROP letiste CASCADE CONSTRAINTS;
-DROP letovy_itinerar CASCADE CONSTRAINTS;
-
 CREATE TABLE obec(
-    o_cislo INTEGER,
+
+    o_cislo INTEGER PRIMARY KEY NOT NULL,
+
     nazev VARCHAR(20) NOT NULL
+
 );
 
 CREATE TABLE letiste(
-    l_cislo INTEGER,
+    l_cislo INTEGER PRIMARY KEY NOT NULL,
+
+    o_cislo INTEGER,
+    FOREIGN KEY (o_cislo) REFERENCES obec(o_cislo),
+
     nazev VARCHAR(20) NOT NULL,
     kod CHAR(3) NOT NULL,
-    typ_letiste VARCHAR(10)
-    o_cislo INTEGER
+    typ_letiste VARCHAR(20)
+
 );
 
 CREATE TABLE letovy_itinerar(
-    lt_cislo INTEGER,
+
+    lt_cislo INTEGER PRIMARY KEY NOT NULL,
+
+    letiste_odletu INTEGER,
+    letiste_priletu INTEGER,
+    FOREIGN KEY (letiste_odletu) REFERENCES letiste(l_cislo),
+    FOREIGN KEY (letiste_priletu) REFERENCES letiste(l_cislo),
+
     datum_a_cas_priletu TIMESTAMP,
     datum_a_cas_odletu TIMESTAMP,
     posledni_zmena TIMESTAMP,
-    stav VARCHAR(10),
-    letiste_odletu INTEGER,
-    letiste_priletu INTEGER
+    stav VARCHAR(20)
+
 );
 
 CREATE TABLE Osoba (
 
-    Osoba_Cislo INTEGER NOT NULL,
+    Osoba_Cislo INTEGER PRIMARY KEY NOT NULL,
+
     Jmeno VARCHAR(255) NOT NULL,
     Prijmeni VARCHAR(255) NOT NULL,
     Statni_prislusnost VARCHAR(255) NOT NULL,
@@ -39,94 +49,122 @@ CREATE TABLE Osoba (
 );
 
 CREATE TABLE Registrovana_osoba (
-    
-    Osoba_Cislo INTEGER NOT NULL,
+
+    Osoba_Cislo INTEGER NOT NULL PRIMARY KEY,
+
+    FOREIGN KEY (Osoba_Cislo) REFERENCES Osoba(Osoba_Cislo),
+
     Telefon VARCHAR(12) NOT NULL,
     Email VARCHAR(320) NOT NULL,
     Heslo VARCHAR(255) NOT NULL,
     Token VARCHAR(20) NOT NULL,
     Metoda_platby VARCHAR(20) NOT NULL
+
 );
 
 CREATE TABLE Rezervace (
 
-    Rezervace_Cislo INTEGER NOT NULL,
-    Stav VARCHAR(25) NOT NULL,
-    Osoba_Cislo INTEGER NOT NULL
+    Rezervace_Cislo INTEGER NOT NULL PRIMARY KEY,
+
+    Osoba_Cislo INTEGER NOT NULL,
+    FOREIGN KEY (Osoba_Cislo) REFERENCES Osoba (Osoba_Cislo),
+
+    Stav VARCHAR(25) NOT NULL
 
 );
 
 CREATE TABLE Letenka (
 
-    Letenka_Cislo INTEGER NOT NULL,
+    Letenka_Cislo INTEGER NOT NULL PRIMARY KEY,
+
+    Rezervace_Cislo INTEGER NOT NULL,
+    FOREIGN KEY (Rezervace_Cislo) REFERENCES Rezervace (Rezervace_Cislo),
+
     Cena INTEGER NOT NULL,
     Stav VARCHAR(15) NOT NULL,
-    Covid_doklad VARCHAR(255),
-    Rezervace_Cislo INTEGER NOT NULL,
-    Osoba_Cislo INTEGER NOT NULL
+    Covid_doklad VARCHAR(255)
+
+);
+
+CREATE TABLE Spolecnost (
+
+    DICH INTEGER NOT NULL PRIMARY KEY,
+
+    Nazev varchar(255) NOT NULL,
+    logo VARCHAR(255)
+
+);
+
+CREATE TABLE Letadlo (
+
+    Seriove_cislo INTEGER NOT NULL PRIMARY KEY,
+
+    DICH INTEGER NOT NULL,
+    FOREIGN KEY (DICH) REFERENCES Spolecnost (DICH),
+
+    Typ_letadla varchar(30)
+
+
+);
+
+CREATE TABLE Let (
+
+    Let_cislo INTEGER NOT NULL PRIMARY KEY,
+
+    Seriove_cislo INTEGER NOT NULL,
+    lt_cislo INTEGER NOT NULL,
+    DICH INTEGER NOT NULL,
+    FOREIGN KEY (Seriove_cislo) REFERENCES Letadlo (Seriove_cislo),
+    FOREIGN KEY (lt_cislo) REFERENCES letovy_itinerar (lt_cislo),
+    FOREIGN KEY (DICH) REFERENCES Spolecnost (DICH)
 
 );
 
 CREATE TABLE Palubni_Listek (
 
-    Palubni_Listek_Cislo INTEGER NOT NULL,
+    Palubni_Listek_Cislo INTEGER NOT NULL PRIMARY KEY,
+
     Letenka_Cislo INTEGER NOT NULL,
+    Let_cislo INTEGER NOT NULL,
+    FOREIGN KEY (Letenka_Cislo) REFERENCES Letenka (Letenka_Cislo),
+    FOREIGN KEY (Let_cislo) REFERENCES Let (Let_cislo),
+
     Check_in CHAR(1) NOT NULL,
-    Gate INTEGER NOT NULL,
-    Letenka_Cislo INTEGER NOT NULL,
-    Let_cislo INTEGER NOT NULL
+    Gate INTEGER NOT NULL
 
 );
 
 CREATE TABLE Sluzba (
 
-    Sluzba_cislo INTEGER NOT NULL,
+    Sluzba_cislo INTEGER NOT NULL PRIMARY KEY,
+
     Nazev varchar(255) NOT NULL,
     Cena INTEGER NOT NULL,
     Dostupnost_sluzby CHAR(1) NOT NULL
 
 );
 
-CREATE TABLE Sedadlo (
-
-    Sedadlo_cislo INTEGER NOT NULL,
-    Radek INTEGER NOT NULL,
-    Misto CHAR(1) NOT NULL,
-    ID_tridy INTEGER NOT NULL
-
-);
-
 CREATE TABLE Trida (
 
-    ID_tridy INTEGER NOT NULL,
+    ID_tridy INTEGER NOT NULL PRIMARY KEY,
+
     Nazev varchar(7) NOT NULL,
     Pocet_mist INTEGER NOT NULL
 
 );
 
-CREATE TABLE Letadlo (
+CREATE TABLE Sedadlo (
 
-    Seriove_cislo INTEGER NOT NULL,
-    Typ_letadla varchar(30),
-    DICH INTEGER NOT NULL
-);
+    Sedadlo_cislo INTEGER NOT NULL PRIMARY KEY ,
 
-CREATE TABLE Spolecnost (
+    ID_tridy INTEGER NOT NULL,
+    FOREIGN KEY (ID_tridy) REFERENCES Trida (ID_tridy),
 
-    DICH INTEGER NOT NULL,
-    Nazev varchar(255) NOT NULL,
-    logo VARCHAR(255)
+    Radek INTEGER NOT NULL,
+    Misto CHAR(1) NOT NULL
 
 );
 
-CREATE TABLE Let (
-
-    Let_cislo INTEGER NOT NULL,
-    lt_cislo INTEGER NOT NULL,
-    DICH INTEGER NOT NULL,
-    Seriove_cislo_letadla NOT NULL
-
-);
 
 --N to N Tables
 
@@ -134,89 +172,110 @@ CREATE TABLE Pridana_Sluzba (
 
     Sluzba_cislo INTEGER NOT NULL,
     Letenka_Cislo INTEGER NOT NULL,
+
+    FOREIGN KEY (Sluzba_cislo) REFERENCES Sluzba(Sluzba_cislo),
+    FOREIGN KEY (Letenka_Cislo) REFERENCES Letenka(Letenka_Cislo),
+
     Uspesnost varchar(3) NOT NULL,
     Zahrnuto_v_cene varchar(3) NOT NULL,
     Pocet INTEGER NOT NULL
+
 );
 
 CREATE TABLE Osoba_Letenka (
+
     Osoba_Cislo INTEGER NOT NULL,
-    Letenka_Cislo INTEGER NOT NULL
+    Letenka_Cislo INTEGER NOT NULL,
+
+    FOREIGN KEY (Osoba_Cislo) REFERENCES Osoba(Osoba_Cislo),
+    FOREIGN KEY (Letenka_Cislo) REFERENCES Letenka (Letenka_Cislo)
+
 );
 
-CREATE TABLE Sedadlo_Palubli_listek (
+CREATE TABLE Sedadlo_Palubni_listek (
+
     Sedadlo_Cislo INTEGER NOT NULL,
-    Palubni_Listek_Cislo INTEGER NOT NULL
+    Palubni_Listek_Cislo INTEGER NOT NULL,
+
+    FOREIGN KEY (Sedadlo_Cislo) REFERENCES Sedadlo(Sedadlo_cislo),
+    FOREIGN KEY (Palubni_Listek_Cislo) REFERENCES Palubni_Listek (Palubni_Listek_Cislo)
+
 );
 
 CREATE TABLE Trida_Letadlo (
+
     ID_tridy INTEGER NOT NULL,
-    Seriove_cislo INTEGER NOT NULL
+    Seriove_cislo INTEGER NOT NULL,
+    FOREIGN KEY (ID_tridy) REFERENCES Trida(ID_tridy),
+    FOREIGN KEY (Seriove_cislo) REFERENCES Letadlo (Seriove_cislo)
+
 );
 
 CREATE TABLE Spolecnost_Letiste(
+
     DICH INTEGER NOT NULL,
-    l_cislo INTEGER NOT NULL
-)
+    l_cislo INTEGER NOT NULL,
+    FOREIGN KEY (DICH) REFERENCES Spolecnost (DICH) ,
+    FOREIGN KEY (l_cislo) REFERENCES Letiste (l_cislo)
+
+);
 
 
+INSERT INTO Osoba
+VALUES ('1', 'Beren', 'Erhamion', 'Dortonion', TO_DATE('2000-06-10', 'YYYY-MM-DD'), 'Dorton', 'N');
 
-ALTER TABLE Osoba ADD CONSTRAINT PK_Osoba PRIMARY KEY (Osoba_Cislo);
---ALTER TABLE Registrovana_osoba ADD CONSTRAINT PK_Osoba PRIMARY KEY (Osoba_Cislo);
-ALTER TABLE Registrovana_osoba ADD CONSTRAINT PK_Osoba PRIMARY KEY (Osoba_Cislo) REFERENCES Osoba (Osoba_Cislo);
+INSERT INTO Registrovana_osoba
+VALUES ('1', '+3246578912', 'berenlutien@gmail.com', 'Silmaril', 'Something', 'VISA');
 
-ALTER TABLE Rezervace ADD CONSTRAINT PK_Rezervace PRIMARY KEY (Rezervace_Cislo);
-ALTER TABLE Rezervace ADD CONSTRAINT FK_Osoba FOREIGN KEY (Osoba_Cislo) REFERENCES Registrovana_osoba (Osoba_Cislo);
+INSERT INTO Rezervace
+VALUES ('1', '1', 'Reserved');
 
-ALTER TABLE Letenka ADD CONSTRAINT PK_Letenka PRIMARY KEY (Letenka_Cislo);
-ALTER TABLE Letenka ADD CONSTRAINT FK_Rezervace FOREIGN KEY (Rezervace_Cislo) REFERENCES Rezervace (Rezervace_Cislo);
+INSERT INTO Letenka
+VALUES ('1', '1', '5000', 'Printed', 'Attached');
 
-ALTER TABLE Palubni_Listek ADD CONSTRAINT PK_Palubni_Listek PRIMARY KEY (Palubni_Listek_Cislo);
-ALTER TABLE Palubni_Listek ADD CONSTRAINT FK_Palubni_Listek FOREIGN KEY (Letenka_Cislo) REFERENCES Letenka (Letenka_Cislo);
+INSERT INTO obec
+VALUES ('15', 'Doriat');
 
-ALTER TABLE Sedadlo ADD CONSTRAINT PK_Sedadlo PRIMARY KEY (Sedadlo_Cislo);
-ALTER TABLE Sedadlo ADD CONSTRAINT FK_Trida FOREIGN KEY (ID_tridy) REFERENCES Trida (ID_tridy);
+INSERT INTO letiste
+VALUES ('3', '15', 'Melian', 'TBD', 'International');
+INSERT INTO letiste
+VALUES ('4', '15', 'Grot', 'TBD', 'International');
 
-ALTER TABLE Trida ADD CONSTRAINT PK_Trida PRIMARY KEY (ID_tridy);
+INSERT INTO letovy_itinerar
+VALUES ('12', '3', '4', TO_TIMESTAMP('2022-11-23 8:45:16', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2022-11-23 3:34:23', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2022-11-23 1:48:35', 'YYYY-MM-DD HH:MI:SS'), 'Registration');
 
-ALTER TABLE Letadlo ADD CONSTRAINT PK_Letadlo PRIMARY KEY (Seriove_cislo);
-ALTER TABLE Letadlo ADD CONSTRAINT FK_Spolecnost FOREIGN KEY (DICH) REFERENCES Spolecnost (DICH);
+INSERT INTO Spolecnost
+VALUES ('764532891', 'MiddleEarthAirlines', 'Torondor_the_Great');
 
-ALTER TABLE Spolecnost ADD CONSTRAINT PK_Spolecnost PRIMARY KEY (DICH);
+INSERT INTO Letadlo
+VALUES ('264', '764532891', 'Passenger');
 
-ALTER TABLE Let ADD CONSTRAINT PK_Let PRIMARY KEY (Let_cislo);
-ALTER TABLE Let ADD CONSTRAINT FK_Spolecnost FOREIGN KEY (DICH) REFERENCES Spolecnost (DICH);
-ALTER TABLE Let ADD CONSTRAINT FK_Letovy_itinerar FOREIGN KEY (lt_cislo) REFERENCES letovy_itinerar (lt_cislo);
-ALTER TABLE Let ADD CONSTRAINT FK_Letadlo FOREIGN KEY (Seriove_cislo_letadla) REFERENCES Letadlo (Seriove_cislo);
+INSERT INTO Let
+VALUES ('50', '264', '12', '764532891');
 
-ALTER TABLE Sluzba ADD CONSTRAINT PK_Sluzba PRIMARY KEY (Sluzba_cislo);
+INSERT INTO Palubni_Listek
+VALUES ('1', '1', '50', 'Y', '25');
 
-ALTER TABLE obec ADD CONSTRAINT PK_obec PRIMARY KEY (o_cilso);
+INSERT INTO Sluzba
+VALUES ('2', 'A song from flight attendant', '500', 'Y');
 
-ALTER TABLE letiste ADD CONSTRAINT PK_letiste PRIMARY KEY (l_cislo);
-ALTER TABLE letiste ADD CONSTRAINT FK_letiste_obec FOREIGN KEY (o_cilso) REFERENCES obec;
+INSERT INTO Trida
+VALUES ('2', 'ECONOM', '58');
 
-ALTER TABLE letovy_itinerar ADD CONSTRAINT PK_letovy_itinerar PRIMARY KEY (lt_cislo);
-ALTER TABLE letovy_itinerar ADD CONSTRAINT FK_lt_letiste_odletu FOREIGN KEY (letiste_odletu) REFERENCES letiste;
-ALTER TABLE letovy_itinerar ADD CONSTRAINT FK_lt_letiste_priletu FOREIGN KEY (letiste_priletu) REFERENCES letiste;
+INSERT INTO Sedadlo
+VALUES ('1', '2', '25', 'F');
 
--- N to N
-ALTER TABLE Osoba_Letenka ADD CONSTRAINT PK_Osoba_Letenka PRIMARY KEY (Osoba_Cislo, Letenka_Cislo);
-ALTER TABLE Osoba_Letenka ADD CONSTRAINT FK_Osoba FOREIGN KEY (Osoba_Cislo) REFERENCES Osoba (Osoba_Cislo);
-ALTER TABLE Osoba_Letenka ADD CONSTRAINT FK_Letenka FOREIGN KEY (Letenka_Cislo) REFERENCES Letenka (Letenka_Cislo);
+INSERT INTO Pridana_Sluzba
+VALUES ('2', '1', 'YES', 'YES', '1');
 
-ALTER TABLE Pridana_Sluzba ADD CONSTRAINT PK_Pridana_SLuzba PRIMARY KEY (Sluzba_cislo, Letenka_Cislo);
-ALTER TABLE Pridana_Sluzba ADD CONSTRAINT FK_Sluzba FOREIGN KEY (Sluzba_cislo) REFERENCES Sluzba (Sluzba_cislo);
-ALTER TABLE Pridana_Sluzba ADD CONSTRAINT FK_Letenka FOREIGN KEY (Letenka_Cislo) REFERENCES Letenka (Letenka_Cislo);
+INSERT INTO Osoba_Letenka
+VALUES ('1', '1');
 
-ALTER TABLE Sedadlo_Palubli_listek ADD CONSTRAINT PK_Sedadlo_Palubli_listek PRIMARY KEY (Palubni_Listek_Cislo, Sedadlo_Cislo);
-ALTER TABLE Sedadlo_Palubli_listek ADD CONSTRAINT FK_Sedadlo FOREIGN KEY (Sedadlo_Cislo) REFERENCES Sedadlo (Sedadlo_Cislo);
-ALTER TABLE Sedadlo_Palubli_listek ADD CONSTRAINT FK_Palubni_Listek FOREIGN KEY (Palubni_Listek_Cislo) REFERENCES Palubni_Listek_Cislo (Palubni_Listek_Cislo);
+INSERT INTO Sedadlo_Palubni_listek
+VALUES ('1', '1');
 
-ALTER TABLE Trida_Letadlo ADD CONSTRAINT PK_Trida_Letadlo PRIMARY KEY (ID_tridy, Seriove_cislo);
-ALTER TABLE Trida_Letadlo ADD CONSTRAINT FK_Trida FOREIGN KEY (ID_tridy) REFERENCES Trida (ID_tridy);
-ALTER TABLE Trida_Letadlo ADD CONSTRAINT FK_Letadlo FOREIGN KEY (Seriove_cislo) REFERENCES Letadlo (Seriove_cislo);
+INSERT INTO Trida_Letadlo
+VALUES ('2', '264');
 
-ALTER TABLE Spolecnost_Letiste ADD CONSTRAINT PK_Spolecnost_Letiste PRIMARY KEY (DICH, l_cislo);
-ALTER TABLE Spolecnost_Letiste ADD CONSTRAINT FK_Spolecnost FOREIGN KEY (DICH) REFERENCES Spolecnost (DICH);
-ALTER TABLE Spolecnost_Letiste ADD CONSTRAINT FK_ FOREIGN KEY (Seriove_cislo) REFERENCES Letadlo (Seriove_cislo);
+INSERT INTO Spolecnost_Letiste
+VALUES ('764532891', '3');
