@@ -358,3 +358,11 @@ INSERT ALL
     INTO Spolecnost_Letiste VALUES ('CZ64532891', '3')
     INTO Spolecnost_Letiste VALUES ('CZ78465632', '4')
 SELECT * FROM dual;
+
+-- 3 cast
+
+-- выбираем всех пользователей, у кого есть\был палубни листэк
+SELECT pl.gate, l.CENA , o.JMENO, o.PRIJMENI
+FROM PALUBNI_LISTEK pl NATURAL JOIN LETENKA l natural JOIN OSOBA_LETENKA o_l natural join OSOBA o
+
+
