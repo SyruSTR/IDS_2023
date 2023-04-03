@@ -1,23 +1,23 @@
 
---DROP TABLE LET cascade constraints;
--- DROP TABLE LETADLO cascade constraints;
--- DROP TABLE letenka cascade constraints;
--- DROP TABLE letiste cascade constraints;
--- DROP TABLE letovy_itinerar;
--- DROP TABLE obec;
--- DROP TABLE osoba cascade constraints ;
--- DROP TABLE OSOBA_LETENKA;
--- DROP TABLE PALUBNI_LISTEK cascade constraints;
--- DROP TABLE PRIDANA_SLUZBA;
--- DROP TABLE registrovana_osoba;
--- DROP TABLE rezervace;
--- DROP TABLE SEDADLO cascade constraints;
--- DROP TABLE SEDADLO_PALUBNI_LISTEK;
--- DROP TABLE SLUZBA;
--- DROP TABLE SPOLECNOST cascade constraints;
--- DROP TABLE SPOLECNOST_LETISTE;
--- DROP TABLE TRIDA cascade constraints;
--- DROP TABLE TRIDA_LETADLO;
+DROP TABLE LET cascade constraints;
+DROP TABLE LETADLO cascade constraints;
+DROP TABLE letenka cascade constraints;
+DROP TABLE letiste cascade constraints;
+DROP TABLE letovy_itinerar;
+DROP TABLE obec;
+DROP TABLE osoba cascade constraints ;
+DROP TABLE OSOBA_LETENKA;
+DROP TABLE PALUBNI_LISTEK cascade constraints;
+DROP TABLE PRIDANA_SLUZBA;
+DROP TABLE registrovana_osoba;
+DROP TABLE rezervace;
+DROP TABLE SEDADLO cascade constraints;
+DROP TABLE SEDADLO_PALUBNI_LISTEK;
+DROP TABLE SLUZBA;
+DROP TABLE SPOLECNOST cascade constraints;
+DROP TABLE SPOLECNOST_LETISTE;
+DROP TABLE TRIDA cascade constraints;
+DROP TABLE TRIDA_LETADLO;
 
 CREATE TABLE obec(
 
@@ -254,94 +254,94 @@ CREATE TABLE Spolecnost_Letiste(
 INSERT ALL
     INTO Osoba VALUES ('1', 'Beren', 'Erhamion', 'Dortonion', TO_DATE('2000-06-10', 'YYYY-MM-DD'), 'Dorton', 'N')
     INTO Osoba VALUES ('2', 'Earendil', 'Mariner', 'Gondolin', TO_DATE('2010-05-15', 'YYYY-MM-DD'), 'Gon', 'N')
-SELECT * FROM osoba;
+SELECT * FROM dual;
 
 INSERT ALL
         INTO Registrovana_osoba VALUES ('1', '+3246578912', 'berenlutien@gmail.com', 'Silmaril', 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NSIsIm5hbWUiOiJKb2huIEdvbGQiLCJhZG1pbiI6dHJ1ZX0K.LIHjWCBORSWMEibq-tnT8ue_deUqZx1K0XxCOXZRrBI', 'VISA')
         INTO Registrovana_osoba VALUES ('2', '+4946789723', 'earendilsea@gmail.com', 'Vingilote', 'eyJhbGciOiJIUzUxMiIsInR7cCI6IkpXVCJ9.ioJzdWIiOiIxMjM0NSIsIm5hbWUiOiJKb2huIEdgtGQiLCJhZG1pbiI6dHJ1ZX0K.LIHjWCBORSWMEibq-tnT8ue_deUqZx1K0XxCOXZRrBI', 'PayPal')
-SELECT * FROM Registrovana_osoba;
+SELECT * FROM dual;
 
 INSERT ALL
     INTO Rezervace VALUES ('1', '1', 'Reserved')
     INTO Rezervace VALUES ('2', '2', 'Reserved')
-SELECT * FROM REZERVACE;
+SELECT * FROM dual;
 
 INSERT ALL
     INTO Letenka VALUES ('1', '1', '5000', 'Printed', 'Attached')
     INTO LETENKA VALUES ('2', '2', '7635', 'Unprinted', 'Attached')
-SELECT  * FROM  Letenka;
+SELECT  * FROM  dual;
 
 INSERT ALL
     INTO obec VALUES ('15', 'Doriat')
     INTO obec VALUES ('6', 'Beleriand')
-SELECT * FROM obec;
+SELECT * FROM dual;
 
 INSERT ALL
     INTO letiste VALUES ('3', '15', 'Melian', 'TBD', 'International')
     INTO letiste VALUES ('4', '6', 'Valinor', 'OUI', 'International')
-select * from letiste;
+select * from dual;
 
 INSERT ALL
     INTO letovy_itinerar VALUES ('12', '3', '4', TO_TIMESTAMP('2022-11-23 8:45:16', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2022-11-23 3:34:23', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2022-11-23 1:48:35', 'YYYY-MM-DD HH:MI:SS'), 'Registration')
-    INTO letovy_itinerar VALUES ('28', '18', '5', TO_TIMESTAMP('2023-04-15 5:31:12', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2023-04-15 2:25:28', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2022-04-15 1:12:43', 'YYYY-MM-DD HH:MI:SS'), 'Take off')
-SELECT * FROM LETOVY_ITINERAR;
+    --INTO letovy_itinerar VALUES ('28', '18', '5', TO_TIMESTAMP('2023-04-15 5:31:12', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2023-04-15 2:25:28', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2022-04-15 1:12:43', 'YYYY-MM-DD HH:MI:SS'), 'Take off')
+SELECT * FROM dual;
 
 INSERT ALL
     INTO Spolecnost VALUES ('CZ64532891', 'MiddleEarthAirlines', 'Torondor theGreat')
     INTO Spolecnost VALUES ('CZ78465632', 'IluvatarFlights', 'Views of Valinor')
-SELECT * FROM Spolecnost;
+SELECT * FROM dual;
 
 INSERT ALL
     INTO Letadlo VALUES ('264', 'CZ64532891', 'Passenger')
     INTO Letadlo VALUES ('592', 'CZ78465632', 'Personal')
-SELECT * FROM LETADLO;
+SELECT * FROM dual;
 
 INSERT ALL
     INTO Let VALUES ('50', '264', '12', 'CZ64532891')
-    INTO LET VALUES ('294', '592', '28', 'CZ78465632')
-SELECT * FROM LET;
+    --INTO LET VALUES ('294', '592', '28', 'CZ78465632')
+SELECT * FROM dual;
 
 INSERT ALL
     INTO Palubni_Listek VALUES ('1', '1', '50', 'Y', '25')
-    INTO Palubni_Listek VALUES ('2', '2', '294', 'Y', '9')
-SELECT * FROM Palubni_Listek;
+    --INTO Palubni_Listek VALUES ('2', '2', '294', 'Y', '9')
+SELECT * FROM dual;
 
 INSERT ALL
     INTO Sluzba VALUES ('2', 'A song from flight attendant', '500', 'Y')
     INTO Sluzba VALUES ('5', 'Surprise on board', '0', 'Y')
-SELECT * FROM Sluzba;
+SELECT * FROM dual;
 
 INSERT ALL
     INTO Trida VALUES ('2', 'ECONOM', '57')
-    INTO Trida VALUES ('1', 'BUSINESS', '12')
-SELECT * FROM Trida;
+    INTO Trida VALUES ('1', 'BUSINES', '12')
+SELECT * FROM dual;
 
 INSERT ALL
     INTO Sedadlo VALUES ('1', '2', '25', 'F')
     INTO Sedadlo VALUES ('2', '1', '5', 'A')
-SELECT * FROM Sedadlo;
+SELECT * FROM dual;
 
 INSERT ALL
     INTO Pridana_Sluzba VALUES ('2', '1', 'YES', 'YES', '1')
     INTO Pridana_Sluzba VALUES ('5', '2', 'YES', 'YES', '1')
-SELECT * FROM PRIDANA_SLUZBA;
+SELECT * FROM dual;
 
 INSERT ALL
     INTO Osoba_Letenka VALUES ('1', '1')
     INTO Osoba_Letenka VALUES ('2', '2')
-SELECT * FROM Osoba_Letenka;
+SELECT * FROM dual;
 
 INSERT ALL
     INTO Sedadlo_Palubni_listek VALUES ('1', '1')
-    INTO Sedadlo_Palubni_listek VALUES ('2', '2')
-SELECT * FROM Sedadlo_Palubni_listek;
+    --INTO Sedadlo_Palubni_listek VALUES ('2', '2')
+SELECT * FROM dual;
 
 INSERT ALL
     INTO Trida_Letadlo VALUES ('2', '264')
     INTO Trida_Letadlo VALUES ('1', '592')
-SELECT * FROM Trida_Letadlo;
+SELECT * FROM dual;
 
 INSERT ALL
     INTO Spolecnost_Letiste VALUES ('CZ64532891', '3')
     INTO Spolecnost_Letiste VALUES ('CZ78465632', '4')
-SELECT * FROM SPOLECNOST_LETISTE;
+SELECT * FROM dual;
