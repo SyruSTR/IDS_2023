@@ -1,23 +1,36 @@
 
-DROP TABLE LET cascade constraints;
-DROP TABLE LETADLO cascade constraints;
-DROP TABLE letenka cascade constraints;
-DROP TABLE letiste cascade constraints;
-DROP TABLE letovy_itinerar;
-DROP TABLE obec;
-DROP TABLE osoba cascade constraints ;
-DROP TABLE OSOBA_LETENKA;
-DROP TABLE PALUBNI_LISTEK cascade constraints;
-DROP TABLE PRIDANA_SLUZBA;
-DROP TABLE registrovana_osoba;
-DROP TABLE rezervace;
-DROP TABLE SEDADLO cascade constraints;
-DROP TABLE SEDADLO_PALUBNI_LISTEK;
-DROP TABLE SLUZBA;
-DROP TABLE SPOLECNOST cascade constraints;
-DROP TABLE SPOLECNOST_LETISTE;
-DROP TABLE TRIDA cascade constraints;
-DROP TABLE TRIDA_LETADLO;
+BEGIN
+  FOR cur_tab IN (SELECT table_name FROM user_tables) LOOP
+    BEGIN
+        EXECUTE IMMEDIATE 'DROP TABLE ' || cur_tab.table_name || ' CASCADE CONSTRAINTS';
+    EXCEPTION
+        WHEN OTHERS THEN
+            IF SQLCODE != -942 THEN
+                RAISE;
+            END IF;
+    END;
+  END LOOP;
+END;
+
+-- DROP TABLE LET cascade constraints;
+-- DROP TABLE LETADLO cascade constraints;
+-- DROP TABLE letenka cascade constraints;
+-- DROP TABLE letiste cascade constraints;
+-- DROP TABLE letovy_itinerar;
+-- DROP TABLE obec;
+-- DROP TABLE osoba cascade constraints ;
+-- DROP TABLE OSOBA_LETENKA;
+-- DROP TABLE PALUBNI_LISTEK cascade constraints;
+-- DROP TABLE PRIDANA_SLUZBA;
+-- DROP TABLE registrovana_osoba;
+-- DROP TABLE rezervace;
+-- DROP TABLE SEDADLO cascade constraints;
+-- DROP TABLE SEDADLO_PALUBNI_LISTEK;
+-- DROP TABLE SLUZBA;
+-- DROP TABLE SPOLECNOST cascade constraints;
+-- DROP TABLE SPOLECNOST_LETISTE;
+-- DROP TABLE TRIDA cascade constraints;
+-- DROP TABLE TRIDA_LETADLO;
 
 CREATE TABLE obec(
 
