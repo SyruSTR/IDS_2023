@@ -1,4 +1,3 @@
-
 BEGIN
   FOR cur_tab IN (SELECT table_name FROM user_tables) LOOP
     BEGIN
@@ -83,11 +82,9 @@ CREATE TABLE Osoba (
 );
 
  /*
-
  Pro reprezentaci generalizace jsme si vybrali 1. moznost.
  Vytvorili jsme tabulku nadtypu a tabulku podtypu.
  Podtyp obsahuje primarni klic nadtypu.
-
 */
 
 CREATE TABLE Registrovana_osoba (
@@ -218,6 +215,7 @@ CREATE TABLE Pridana_Sluzba (
 
     FOREIGN KEY (Sluzba_cislo) REFERENCES Sluzba(Sluzba_cislo),
     FOREIGN KEY (Letenka_Cislo) REFERENCES Letenka(Letenka_Cislo),
+    CONSTRAINT PK_Pridana_Sluzba PRIMARY KEY (Sluzba_cislo, Letenka_Cislo),
 
     Uspesnost varchar(3) NOT NULL,
     Zahrnuto_v_cene varchar(3) NOT NULL,
@@ -231,7 +229,8 @@ CREATE TABLE Osoba_Letenka (
     Letenka_Cislo INTEGER NOT NULL,
 
     FOREIGN KEY (Osoba_Cislo) REFERENCES Osoba(Osoba_Cislo),
-    FOREIGN KEY (Letenka_Cislo) REFERENCES Letenka (Letenka_Cislo)
+    FOREIGN KEY (Letenka_Cislo) REFERENCES Letenka (Letenka_Cislo),
+    CONSTRAINT PK_Osoba_Letenka PRIMARY KEY (Osoba_Cislo, Letenka_Cislo)
 
 );
 
@@ -241,7 +240,8 @@ CREATE TABLE Sedadlo_Palubni_listek (
     Palubni_Listek_Cislo INTEGER NOT NULL,
 
     FOREIGN KEY (Sedadlo_Cislo) REFERENCES Sedadlo(Sedadlo_cislo),
-    FOREIGN KEY (Palubni_Listek_Cislo) REFERENCES Palubni_Listek (Palubni_Listek_Cislo)
+    FOREIGN KEY (Palubni_Listek_Cislo) REFERENCES Palubni_Listek (Palubni_Listek_Cislo),
+    CONSTRAINT PK_Sedadlo_Palubni_Listek PRIMARY KEY (Sedadlo_Cislo, Palubni_Listek_Cislo)
 
 );
 
@@ -250,7 +250,8 @@ CREATE TABLE Trida_Letadlo (
     ID_tridy INTEGER NOT NULL,
     Seriove_cislo INTEGER NOT NULL,
     FOREIGN KEY (ID_tridy) REFERENCES Trida(ID_tridy),
-    FOREIGN KEY (Seriove_cislo) REFERENCES Letadlo (Seriove_cislo)
+    FOREIGN KEY (Seriove_cislo) REFERENCES Letadlo (Seriove_cislo),
+    CONSTRAINT PK_Trida_Letadlo PRIMARY KEY (ID_tridy, Seriove_cislo)
 
 );
 
@@ -259,7 +260,8 @@ CREATE TABLE Spolecnost_Letiste(
     DICH CHAR (10) NOT NULL,
     l_cislo INTEGER NOT NULL,
     FOREIGN KEY (DICH) REFERENCES Spolecnost (DICH) ,
-    FOREIGN KEY (l_cislo) REFERENCES Letiste (l_cislo)
+    FOREIGN KEY (l_cislo) REFERENCES Letiste (l_cislo),
+    CONSTRAINT PK_Spolecnost_Letiste PRIMARY KEY (DICH, l_cislo)
 
 );
 
@@ -300,7 +302,7 @@ INSERT ALL
 SELECT * FROM dual;
 
 INSERT ALL
-    INTO Spolecnost VALUES ('CZ64532891', 'MiddleEarthAirlines', 'Torondor theGreat')
+    INTO Spolecnost VALUES ('CZ64532891', 'MiddleEarthAirlines', 'Torondor the Great')
     INTO Spolecnost VALUES ('CZ78465632', 'IluvatarFlights', 'Views of Valinor')
 SELECT * FROM dual;
 
@@ -361,8 +363,41 @@ SELECT * FROM dual;
 
 -- 3 cast
 
--- выбираем всех пользователей, у кого есть\был палубни листэк
-SELECT pl.gate, l.CENA , o.JMENO, o.PRIJMENI
-FROM PALUBNI_LISTEK pl NATURAL JOIN LETENKA l natural JOIN OSOBA_LETENKA o_l natural join OSOBA o
+-- Vybirame letiste odletu a ukazujeme ji kod a nazev obecu ve kterem nachazi
+select lt.LETISTE_ODLETU, letiste.KOD, obec.NAZEV
+FROM LETOVY_ITINERAR lt
+INNER JOIN LETISTE letiste ON lt.LETISTE_ODLETU = letiste.L_CISLO
+INNER JOIN OBEC obec on letiste.O_CISLO = OBEC.O_CISLO;
 
+-- Vybirame jestli nejake letadlo patri do jiz zminene spolecnosti
+SELECT Letadlo.DICH
+FROM Letadlo
+INNER JOIN Spolecnost
+ON Letadlo.DICH = Spolecnost.DICH;
 
+-- Vybirame rezervaci a letenku s cenou mensi nez 6000
+SELECT Rezervace.Rezervace_Cislo, Letenka.Letenka_Cislo, Letenka.Cena
+FROM REZERVACE INNER JOIN LETENKA
+ON Rezervace.Rezervace_Cislo = Letenka.Rezervace_Cislo
+WHERE Cena < 6000;
+
+-- Vybirame cenu listku podle jeji vyski
+SELECT MAX(Cena)
+FROM Letenka
+GROUP BY Cena;
+
+-- Vybirame osoby se zadanou statni prislusnosti
+SELECT  COUNT (Osoba_Cislo) as pocet_osob
+FROM Osoba
+WHERE Statni_prislusnost = 'Gondolin'
+GROUP BY Osoba_Cislo;
+
+-- Overujeme jestli zadane letadlo provadi specifikovany let
+SELECT Let_cislo
+FROM Let
+WHERE EXISTS (SELECT Seriove_cislo FROM Letadlo WHERE Letadlo.Seriove_cislo = '264');
+
+-- Vybirame veskerou informaci o letenkach, ci cena je vyssi nez prumerna cena
+SELECT *
+FROM Letenka
+WHERE Cena > (SELECT AVG(Cena) FROM Letenka)
