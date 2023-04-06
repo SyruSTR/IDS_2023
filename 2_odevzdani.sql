@@ -363,7 +363,7 @@ SELECT * FROM dual;
 
 -- 3 cast
 
--- Vybirame letiste odletu a ukazujeme ji kod a nazev obecu ve kterem nachazi
+-- Vybirame letiste odletu a ukazujeme jeho kód a název obce ve kterém se nachází
 select lt.LETISTE_ODLETU, letiste.KOD, obec.NAZEV
 FROM LETOVY_ITINERAR lt
 INNER JOIN LETISTE letiste ON lt.LETISTE_ODLETU = letiste.L_CISLO
