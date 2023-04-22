@@ -11,26 +11,6 @@ BEGIN
   END LOOP;
 END;
 
--- DROP TABLE LET cascade constraints;
--- DROP TABLE LETADLO cascade constraints;
--- DROP TABLE letenka cascade constraints;
--- DROP TABLE letiste cascade constraints;
--- DROP TABLE letovy_itinerar;
--- DROP TABLE obec;
--- DROP TABLE osoba cascade constraints ;
--- DROP TABLE OSOBA_LETENKA;
--- DROP TABLE PALUBNI_LISTEK cascade constraints;
--- DROP TABLE PRIDANA_SLUZBA;
--- DROP TABLE registrovana_osoba;
--- DROP TABLE rezervace;
--- DROP TABLE SEDADLO cascade constraints;
--- DROP TABLE SEDADLO_PALUBNI_LISTEK;
--- DROP TABLE SLUZBA;
--- DROP TABLE SPOLECNOST cascade constraints;
--- DROP TABLE SPOLECNOST_LETISTE;
--- DROP TABLE TRIDA cascade constraints;
--- DROP TABLE TRIDA_LETADLO;
-
 CREATE TABLE obec(
 
     o_cislo INTEGER PRIMARY KEY NOT NULL,
@@ -266,110 +246,183 @@ CREATE TABLE Spolecnost_Letiste(
 );
 
 
-INSERT ALL
-    INTO Osoba VALUES ('1', 'Beren', 'Erhamion', 'Dortonion', TO_DATE('2000-06-10', 'YYYY-MM-DD'), 'Dorton', 'N')
-    INTO Osoba VALUES ('2', 'Earendil', 'Mariner', 'Gondolin', TO_DATE('2010-05-15', 'YYYY-MM-DD'), 'Gon', 'N')
-SELECT * FROM dual;
+-- Inserting rows into the Osoba table
+INSERT INTO Osoba (Osoba_Cislo, Jmeno, Prijmeni, Statni_prislusnost, Datum_narozeni, Cestovni_pas, Vyskyt_v_cerne_listine)
+SELECT '1', 'Beren', 'Erhamion', 'Dortonion', TO_DATE('2000-06-10', 'YYYY-MM-DD'), 'Dorton', 'N' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Osoba WHERE Osoba_Cislo = '1')
+UNION
+SELECT '2', 'Earendil', 'Mariner', 'Gondolin', TO_DATE('2010-05-15', 'YYYY-MM-DD'), 'Gon', 'N' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Osoba WHERE Osoba_Cislo = '2')
+UNION
+SELECT '3', 'Feanor', 'Curufinwe', 'Valinor', TO_DATE('1960-08-23', 'YYYY-MM-DD'), 'Val', 'N' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Osoba WHERE Osoba_Cislo = '3')
+UNION
+SELECT '4', 'Hurin', 'Thalion', 'Dor-Lomin', TO_DATE('1995-03-06', 'YYYY-MM-DD'), 'Dol', 'N' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Osoba WHERE Osoba_Cislo = '4')
+UNION
+SELECT '5', 'Turin', 'Turambar', 'Dor-Lomin', TO_DATE('2000-04-12', 'YYYY-MM-DD'), 'Dol', 'N' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Osoba WHERE Osoba_Cislo = '5');
 
-INSERT ALL
-        INTO Registrovana_osoba VALUES ('1', '+3246578912', 'berenlutien@gmail.com', 'Silmaril', 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NSIsIm5hbWUiOiJKb2huIEdvbGQiLCJhZG1pbiI6dHJ1ZX0K.LIHjWCBORSWMEibq-tnT8ue_deUqZx1K0XxCOXZRrBI', 'VISA')
-        INTO Registrovana_osoba VALUES ('2', '+4946789723', 'earendilsea@gmail.com', 'Vingilote', 'eyJhbGciOiJIUzUxMiIsInR7cCI6IkpXVCJ9.ioJzdWIiOiIxMjM0NSIsIm5hbWUiOiJKb2huIEdgtGQiLCJhZG1pbiI6dHJ1ZX0K.LIHjWCBORSWMEibq-tnT8ue_deUqZx1K0XxCOXZRrBI', 'PayPal')
-SELECT * FROM dual;
+INSERT INTO Registrovana_osoba (Osoba_Cislo, Telefon, Email, Heslo, Token, Metoda_platby)
+SELECT '1', '+3246578912', 'berenlutien@gmail.com', 'Silmaril', 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NSIsIm5hbWUiOiJKb2huIEdvbGQiLCJhZG1pbiI6dHJ1ZX0K.LIHjWCBORSWMEibq-tnT8ue_deUqZx1K0XxCOXZRrBI', 'VISA'
+FROM dual WHERE NOT EXISTS (SELECT 1 FROM Registrovana_osoba WHERE Osoba_Cislo = '1')
+UNION
+SELECT '2', '+4946789723', 'earendilsea@gmail.com', 'Vingilote', 'oiJhbGciOiJIUzUxMiIsInR7cCI6IkpXVCJ9.ioJzdWIiOiIxMjM0NSIsIm5hbWUiOiJKb2huIEdgtGQiLCJhZG1pbiI6dHJ1ZX0K.LIHjWCBORSWMEibq-tnT8ue_deUqZx1K0XxCOXZTRGH', 'PayPal'
+FROM dual WHERE NOT EXISTS (SELECT 1 FROM Registrovana_osoba WHERE Osoba_Cislo = '2')
+UNION
+SELECT '3', '+5446879723', 'protectsilmarils@gmail.com', 'Palantir', 'wvJFGHTY6iOiJIUzUxMiIsJGUY65fCI6IkpXVCJ9.ioJzdWIiOiIxMjM0NSIsIm5hbWUiOiJKb2huIEdgtGQiLCJhZG1p45673dHJ1ZX0K.LIHjWCBORSWMEibq-tnT8ue_deUqZx1K0XxCOXZIOyt', 'Mastercard'
+FROM dual WHERE NOT EXISTS (SELECT 1 FROM Registrovana_osoba WHERE Osoba_Cislo = '3')
+UNION
+SELECT '4', '+6765432189', 'liftthecurse@gmail.com', 'Brethil', 'plJhbGciOiJIUzUxMiPOLJR7cCI6IkpXVCJ9.ioJzdWIiOiIxMjM0NSIsIm67ytriOiJKb2huIEdgtGQiLCKLO01pbiI6dHJ1ZX0K.LIHjWCBORSWMEibq-tnT8ue_deUqZx1K0XxCOXZAGT5', 'GooglePay'
+FROM dual WHERE NOT EXISTS (SELECT 1 FROM Registrovana_osoba WHERE Osoba_Cislo = '4')
+UNION ALL
+SELECT '5', '+9061278437', 'glaurung@gmail.com', 'Kullervo', 'ytuiklciOiJIUzUxMiPOLJR7cCI6POI7XVCJ9.ioJzdWIiOiIxMjM0NSIsIm67ytriOiJKb2huAds5tGQiLCKLO01pbiI6dHJ1ZX0K.LIHjWCBORSWMEibq-tnT8ue_deUqZx1K0XxCOXZUOPK', 'ApplePay'
+FROM dual WHERE NOT EXISTS (SELECT 1 FROM Registrovana_osoba WHERE Osoba_Cislo = '5');
 
-INSERT ALL
-    INTO Rezervace VALUES ('1', '1', 'Reserved')
-    INTO Rezervace VALUES ('2', '2', 'Reserved')
-SELECT * FROM dual;
+INSERT INTO Rezervace (Rezervace_Cislo, Osoba_Cislo, Stav)
+SELECT '1', '1', 'Reserved' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Rezervace WHERE Rezervace_Cislo = '1')
+UNION
+SELECT '2', '2', 'Reserved' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Rezervace WHERE Rezervace_Cislo = '2')
+UNION
+SELECT '3', '3', 'Reserved' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Rezervace WHERE Rezervace_Cislo = '3')
+UNION
+SELECT '4', '4', 'Not reserved' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Rezervace WHERE Rezervace_Cislo = '4')
+UNION
+SELECT '5', '5', 'Reserved' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Rezervace WHERE Rezervace_Cislo = '5');
 
-INSERT ALL
-    INTO Letenka VALUES ('1', '1', '5000', 'Printed', 'Attached')
-    INTO LETENKA VALUES ('2', '2', '7635', 'Unprinted', 'Attached')
-SELECT  * FROM  dual;
+INSERT INTO Letenka (Letenka_Cislo, Rezervace_Cislo, Cena, Stav, Covid_doklad)
+SELECT '1', '1', '5000', 'Printed', 'Attached' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Letenka WHERE Letenka_Cislo = '1')
+UNION
+SELECT '2', '2', '7635', 'Unprinted', 'Attached' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Letenka WHERE Letenka_Cislo = '2')
+UNION
+SELECT '3', '3', '6345', 'Unprinted', 'Unattached' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Letenka WHERE Letenka_Cislo = '3')
+UNION
+SELECT '4', '4', '4200', 'Printed', 'Unattached' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Letenka WHERE Letenka_Cislo = '4')
+UNION
+SELECT '5', '5', '9000', 'Printed', 'Attached' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Letenka WHERE Letenka_Cislo = '5');
 
-INSERT ALL
-    INTO obec VALUES ('15', 'Doriat')
-    INTO obec VALUES ('6', 'Beleriand')
-SELECT * FROM dual;
+INSERT INTO obec (o_cislo, nazev)
+SELECT '15', 'Doriat' FROM dual WHERE NOT EXISTS (SELECT 1 FROM obec WHERE o_cislo = '15')
+UNION
+SELECT '6', 'Beleriand' FROM dual WHERE NOT EXISTS (SELECT 1 FROM obec WHERE o_cislo = '6')
+UNION
+SELECT '29', 'Nargothrond' FROM dual WHERE NOT EXISTS (SELECT 1 FROM obec WHERE o_cislo = '29')
+UNION
+SELECT '66', 'Numenor' FROM dual WHERE NOT EXISTS (SELECT 1 FROM obec WHERE o_cislo = '66')
+UNION
+SELECT '93', 'Sirion' FROM dual WHERE NOT EXISTS (SELECT 1 FROM obec WHERE o_cislo = '93');
 
-INSERT ALL
-    INTO letiste VALUES ('3', '15', 'Melian', 'TBD', 'International')
-    INTO letiste VALUES ('4', '6', 'Valinor', 'OUI', 'International')
-select * from dual;
 
-INSERT ALL
-    INTO letovy_itinerar VALUES ('12', '3', '4', TO_TIMESTAMP('2022-11-23 8:45:16', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2022-11-23 3:34:23', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2022-11-23 1:48:35', 'YYYY-MM-DD HH:MI:SS'), 'Registration')
-    --INTO letovy_itinerar VALUES ('28', '18', '5', TO_TIMESTAMP('2023-04-15 5:31:12', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2023-04-15 2:25:28', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2022-04-15 1:12:43', 'YYYY-MM-DD HH:MI:SS'), 'Take off')
-SELECT * FROM dual;
+INSERT INTO letiste (l_cislo, o_cislo, nazev, kod, typ_letiste)
+SELECT '3', '15', 'Melian', 'TBD', 'International' FROM dual WHERE NOT EXISTS (SELECT 1 FROM letiste WHERE l_cislo = '3')
+UNION
+SELECT '4', '6', 'Valinor', 'OUI', 'International' FROM dual WHERE NOT EXISTS (SELECT 1 FROM letiste WHERE l_cislo = '4')
+UNION
+SELECT '8', '29', 'Finrod', 'UOT', 'Domestic' FROM dual WHERE NOT EXISTS (SELECT 1 FROM letiste WHERE l_cislo = '8')
+UNION
+SELECT '53', '66', 'Elros', 'SUN', 'International' FROM dual WHERE NOT EXISTS (SELECT 1 FROM letiste WHERE l_cislo = '53')
+UNION
+SELECT '510', '93', 'Ectelion', 'PRO', 'Domestic' FROM dual WHERE NOT EXISTS (SELECT 1 FROM letiste WHERE l_cislo = '510');
 
-INSERT ALL
-    INTO Spolecnost VALUES ('CZ64532891', 'MiddleEarthAirlines', 'Torondor the Great')
-    INTO Spolecnost VALUES ('CZ78465632', 'IluvatarFlights', 'Views of Valinor')
-SELECT * FROM dual;
+INSERT INTO letovy_itinerar(lt_cislo, letiste_odletu, letiste_priletu, datum_a_cas_priletu, datum_a_cas_odletu, posledni_zmena, stav)
+SELECT '12', '3', '4', TO_TIMESTAMP('2022-11-23 8:45:16', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2022-11-23 3:34:23', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2022-11-23 1:48:35', 'YYYY-MM-DD HH:MI:SS'), 'Registration' FROM dual WHERE NOT EXISTS (SELECT 1 FROM letovy_itinerar WHERE lt_cislo = '12')
+UNION
+SELECT '28', '53', '4', TO_TIMESTAMP('2023-04-15 5:31:12', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2023-04-15 2:25:28', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2022-04-15 1:12:52', 'YYYY-MM-DD HH:MI:SS'), 'Take off' FROM dual WHERE NOT EXISTS (SELECT 1 FROM letovy_itinerar WHERE lt_cislo = '28')
+UNION
+SELECT '40', '8', '510', TO_TIMESTAMP('2023-02-18 3:20:12', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2023-02-19 1:13:47', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2022-02-17 9:52:41', 'YYYY-MM-DD HH:MI:SS'), 'Boarding' FROM dual WHERE NOT EXISTS (SELECT 1 FROM letovy_itinerar WHERE lt_cislo = '40')
+UNION
+SELECT '786', '53', '3', TO_TIMESTAMP('2022-09-03 4:11:45', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2022-09-03 8:35:28', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2022-09-03 3:32:13', 'YYYY-MM-DD HH:MI:SS'), 'Registration' FROM dual WHERE NOT EXISTS (SELECT 1 FROM letovy_itinerar WHERE lt_cislo = '786')
+UNION
+SELECT '63', '510', '8', TO_TIMESTAMP('2022-05-23 1:46:57', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2022-05-23 5:43:21', 'YYYY-MM-DD HH:MI:SS'), TO_TIMESTAMP('2022-05-22 5:34:39', 'YYYY-MM-DD HH:MI:SS'), 'Take off' FROM dual WHERE NOT EXISTS (SELECT 1 FROM letovy_itinerar WHERE lt_cislo = '63');
 
-INSERT ALL
-    INTO Letadlo VALUES ('264', 'CZ64532891', 'Passenger')
-    INTO Letadlo VALUES ('592', 'CZ78465632', 'Personal')
-SELECT * FROM dual;
+INSERT INTO Spolecnost (DICH, Nazev, logo)
+SELECT 'CZ64532891', 'MiddleEarthAirlines', 'Torondor the Great' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Spolecnost WHERE DICH = 'CZ64532891')
+UNION
+SELECT 'CZ78465632', 'IluvatarFlights', 'Views of Valinor' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Spolecnost WHERE DICH = 'CZ78465632')
+UNION
+SELECT 'CZ90256277', 'TurgonPegases', 'Valley of Sirion' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Spolecnost WHERE DICH = 'CZ90256277');
 
-INSERT ALL
-    INTO Let VALUES ('50', '264', '12', 'CZ64532891')
-    --INTO LET VALUES ('294', '592', '28', 'CZ78465632')
-SELECT * FROM dual;
+INSERT INTO Letadlo (Seriove_cislo, DICH, Typ_letadla)
+SELECT '264', 'CZ64532891', 'Passenger' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Letadlo WHERE Seriove_cislo = '264')
+UNION
+SELECT '592', 'CZ78465632', 'Personal' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Letadlo WHERE Seriove_cislo = '592')
+UNION
+SELECT '123', 'CZ64532891', 'Passenger' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Letadlo WHERE Seriove_cislo = '123')
+UNION
+SELECT '862', 'CZ90256277', 'Passenger' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Letadlo WHERE Seriove_cislo = '862')
+UNION
+SELECT '478', 'CZ90256277', 'Passenger' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Letadlo WHERE Seriove_cislo = '478');
 
-INSERT ALL
-    INTO Palubni_Listek VALUES ('1', '1', '50', 'Y', '25')
-    --INTO Palubni_Listek VALUES ('2', '2', '294', 'Y', '9')
-SELECT * FROM dual;
+INSERT INTO Let (Let_cislo, Seriove_cislo, lt_cislo, DICH)
+SELECT '50', '264', '12', 'CZ64532891' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Let WHERE Let_cislo = '50')
+UNION
+SELECT '294', '592', '28', 'CZ78465632' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Let WHERE Let_cislo = '294')
+UNION
+SELECT '732', '862', '40', 'CZ90256277' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Let WHERE Let_cislo = '732')
+UNION
+SELECT '663', '123', '63', 'CZ64532891' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Let WHERE Let_cislo = '663');
 
-INSERT ALL
-    INTO Sluzba VALUES ('2', 'A song from flight attendant', '500', 'Y')
-    INTO Sluzba VALUES ('5', 'Surprise on board', '0', 'Y')
-SELECT * FROM dual;
 
-INSERT ALL
-    INTO Trida VALUES ('2', 'ECONOM', '57')
-    INTO Trida VALUES ('1', 'BUSINES', '12')
-SELECT * FROM dual;
+INSERT INTO Palubni_Listek (Palubni_Listek_Cislo, Letenka_Cislo, Let_cislo, Check_in, Gate)
+SELECT '1', '1', '50', 'Y', '25' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Palubni_Listek WHERE Palubni_Listek_Cislo = '1')
+UNION
+SELECT '2', '2', '294', 'Y', '9' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Palubni_Listek WHERE Palubni_Listek_Cislo = '2')
+UNION
+SELECT '5', '3', '732', 'N', '16' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Palubni_Listek WHERE Palubni_Listek_Cislo = '5')
+UNION
+SELECT '10', '4', '663', 'Y', '36' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Palubni_Listek WHERE Palubni_Listek_Cislo = '10');
 
-INSERT ALL
-    INTO Sedadlo VALUES ('1', '2', '25', 'F')
-    INTO Sedadlo VALUES ('2', '1', '5', 'A')
-SELECT * FROM dual;
+INSERT INTO Sluzba (Sluzba_cislo, Nazev, Cena, Dostupnost_sluzby)
+SELECT '2', 'A song from flight attendant', '500', 'Y' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Sluzba Where Sluzba_cislo = '2')
+UNION
+SELECT '5', 'Surprise on board', '0', 'Y' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Sluzba Where Sluzba_cislo = '5');
 
-INSERT ALL
-    INTO Pridana_Sluzba VALUES ('2', '1', 'YES', 'YES', '1')
-    INTO Pridana_Sluzba VALUES ('5', '2', 'YES', 'YES', '1')
-SELECT * FROM dual;
+INSERT INTO Trida (ID_tridy, Nazev, Pocet_mist)
+SELECT '2', 'ECONOM', '57' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Trida WHERE ID_tridy = '2')
+UNION
+SELECT '1', 'BUSINES', '12' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Trida WHERE ID_tridy = '1');
 
-INSERT ALL
-    INTO Osoba_Letenka VALUES ('1', '1')
-    INTO Osoba_Letenka VALUES ('2', '2')
-SELECT * FROM dual;
+INSERT INTO Sedadlo (Sedadlo_cislo, ID_tridy, Radek, Misto)
+SELECT '1', '2', '25', 'F' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Sedadlo WHERE Sedadlo_cislo = '1')
+UNION
+SELECT '2', '1', '5', 'A' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Sedadlo WHERE Sedadlo_cislo = '2')
+UNION
+SELECT '5', '2', '12', 'C' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Sedadlo WHERE Sedadlo_cislo = '5')
+UNION
+SELECT '63', '1', '3', 'D' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Sedadlo WHERE Sedadlo_cislo = '63');
 
-INSERT ALL
-    INTO Sedadlo_Palubni_listek VALUES ('1', '1')
-    --INTO Sedadlo_Palubni_listek VALUES ('2', '2')
-SELECT * FROM dual;
+INSERT INTO Pridana_Sluzba (Sluzba_cislo, Letenka_Cislo, Uspesnost, Zahrnuto_v_cene, Pocet)
+SELECT '2', '1', 'YES', 'YES', '1' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Pridana_Sluzba WHERE Sluzba_cislo = '2' AND Letenka_Cislo = '1')
+UNION
+SELECT '5', '2', 'YES', 'YES', '1' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Pridana_Sluzba WHERE Sluzba_cislo = '5' AND Letenka_Cislo = '2');
 
-INSERT ALL
-    INTO Trida_Letadlo VALUES ('2', '264')
-    INTO Trida_Letadlo VALUES ('1', '592')
-SELECT * FROM dual;
+INSERT INTO Osoba_Letenka (Osoba_Cislo, Letenka_Cislo)
+SELECT '1', '1' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Osoba_Letenka WHERE Osoba_Cislo = '1' AND Letenka_Cislo = '1')
+UNION
+SELECT '2', '2' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Osoba_Letenka WHERE Osoba_Cislo = '2' AND Letenka_Cislo = '2');
 
-INSERT ALL
-    INTO Spolecnost_Letiste VALUES ('CZ64532891', '3')
-    INTO Spolecnost_Letiste VALUES ('CZ78465632', '4')
-SELECT * FROM dual;
+INSERT INTO Sedadlo_Palubni_listek (Sedadlo_Cislo, Palubni_Listek_Cislo)
+SELECT '1', '1' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Sedadlo_Palubni_listek WHERE Sedadlo_Cislo = '1' AND Palubni_Listek_Cislo = '1')
+UNION
+SELECT '2', '2' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Sedadlo_Palubni_listek WHERE Sedadlo_Cislo = '2' AND Palubni_Listek_Cislo = '2');
+
+INSERT INTO Trida_Letadlo (ID_tridy, Seriove_cislo)
+SELECT '2', '264' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Trida_Letadlo WHERE ID_tridy = '2' AND Seriove_cislo = '264')
+UNION
+SELECT '1', '592' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Trida_Letadlo WHERE ID_tridy = '1' AND Seriove_cislo = '592');
+
+INSERT INTO Spolecnost_Letiste (DICH, l_cislo)
+SELECT 'CZ64532891', '3' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Spolecnost_Letiste WHERE DICH = 'CZ64532891' AND l_cislo = '3')
+UNION
+SELECT 'CZ78465632', '4' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Spolecnost_Letiste WHERE DICH = 'CZ78465632' AND l_cislo = '4')
+UNION
+SELECT 'CZ90256277', '53' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Spolecnost_Letiste WHERE DICH = 'CZ90256277' AND l_cislo = '53');
+
 
 -- 3 cast
 
--- Vybirame letiste odletu a ukazujeme jeho kód a název obce ve kterém se nachází
+-- Vybirame letiste odletu a ukazujeme jeho kod a nazev obce ve kterem se nachazi
 select lt.LETISTE_ODLETU, letiste.KOD, obec.NAZEV
 FROM LETOVY_ITINERAR lt
 INNER JOIN LETISTE letiste ON lt.LETISTE_ODLETU = letiste.L_CISLO
 INNER JOIN OBEC obec on letiste.O_CISLO = OBEC.O_CISLO;
 
--- Vybirame jestli nejake letadlo patri do jiz zminene spolecnosti
+-- Overujeme jestli nejake letadlo patri do jiz zminene spolecnosti
 SELECT Letadlo.DICH
 FROM Letadlo
 INNER JOIN Spolecnost
@@ -384,20 +437,61 @@ WHERE Cena < 6000;
 -- Vybirame cenu listku podle jeji vyski
 SELECT MAX(Cena)
 FROM Letenka
-GROUP BY Cena;
+GROUP BY Cena
+ORDER BY Cena DESC;
 
 -- Vybirame osoby se zadanou statni prislusnosti
 SELECT  COUNT (Osoba_Cislo) as pocet_osob
 FROM Osoba
-WHERE Statni_prislusnost = 'Gondolin'
+WHERE Statni_prislusnost = 'Dor-Lomin'
 GROUP BY Osoba_Cislo;
 
--- Overujeme jestli zadane letadlo provadi specifikovany let
-SELECT Let_cislo
-FROM Let
-WHERE EXISTS (SELECT Seriove_cislo FROM Letadlo WHERE Letadlo.Seriove_cislo = '264');
+-- Overujeme jestli zadane letadlo a spolecnost provadi specifikovany let
+SELECT *
+FROM Let l
+WHERE EXISTS (
+  SELECT 1
+  FROM Letadlo ld
+  WHERE (ld.Seriove_cislo = l.Seriove_cislo OR ld.DICH = l.DICH)
+    AND (ld.Seriove_cislo = '592' OR ld.DICH = 'CZ64532891')
+);
 
--- Vybirame veskerou informaci o letenkach, ci cena je vyssi nez prumerna cena
+
+-- Vybirame veskerou informaci o letenkach, kde nebyl k dispozici doklad o Covidu
 SELECT *
 FROM Letenka
-WHERE Cena > (SELECT AVG(Cena) FROM Letenka)
+WHERE Covid_doklad IN (SELECT Covid_doklad FROM Letenka WHERE Covid_doklad = 'Unattached');
+
+-- 4. CAST
+
+-- Overujeme jestli datum narozeni neporusi ultimativni pravidla zivota
+CREATE OR REPLACE TRIGGER T_Osoba_datum_narozeni
+BEFORE INSERT OR UPDATE ON Osoba
+FOR EACH ROW
+BEGIN
+    IF :NEW.Datum_narozeni > SYSDATE THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Datum narozeni nemuze byt v budoucnosti!');
+    END IF;
+END;
+
+INSERT INTO Osoba (Osoba_Cislo, Jmeno, Prijmeni, Statni_prislusnost, Datum_narozeni, Cestovni_pas, Vyskyt_v_cerne_listine)
+VALUES (6, 'Eldarion', 'Aragornson', 'Gondor', TO_DATE('2025-05-05', 'YYYY-MM-DD'), 'Gor', 'N');
+
+DROP TRIGGER T_Osoba_datum_narozeni;
+
+--Overujeme jestli email je ve spravnem formatu
+CREATE OR REPLACE TRIGGER T_Registrace_email
+BEFORE INSERT OR UPDATE ON Registrovana_osoba
+FOR EACH ROW
+DECLARE
+    v_email_regex VARCHAR2(255) := '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+BEGIN
+    IF :NEW.Email IS NOT NULL AND REGEXP_LIKE(:NEW.Email, v_email_regex) = FALSE THEN
+        RAISE_APPLICATION_ERROR(-20002, 'Spatny format emailu!');
+    END IF;
+END;
+
+INSERT INTO Registrovana_osoba (Osoba_Cislo, Telefon, Email, Heslo, Token, Metoda_platby)
+VALUES ('3', '+5578345629', 'invalidemail@', 'password', 'token', 'Union Pay');
+
+DROP TRIGGER T_Registrace_email;
