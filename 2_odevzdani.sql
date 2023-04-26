@@ -511,3 +511,42 @@ INSERT INTO Registrovana_osoba (Osoba_Cislo, Telefon, Email, Heslo, Token, Metod
 VALUES ('3', '+5578345629', 'invalidemail@', 'password', 'token', 'Union Pay');
 
 DROP TRIGGER T_Registrace_email;
+
+
+create PROCEDURE test_proc(
+    sercilso LETADLO.Seriove_cislo%TYPE,
+    dich_ letadlo.DICH%TYPE
+)
+IS
+    spatny_dich EXCEPTION;
+    CURSOR letCur IS
+        (SELECT l.DICH,l.SERIOVE_CISLO
+        FROM Let l
+        WHERE EXISTS (
+          SELECT 1
+          FROM Letadlo ld
+          WHERE (ld.Seriove_cislo = l.Seriove_cislo OR ld.DICH = l.DICH)
+            AND (ld.Seriove_cislo = sercilso AND ld.DICH = dich_)
+        ));
+    data_from_let  letCur%ROWTYPE;
+BEGIN
+    IF upper(substr(data_from_let.DICH,1,2)) != 'CZ' THEN
+        raise spatny_dich;
+    END IF;
+    OPEN letCur;
+    LOOP
+        FETCH letCur INTO data_from_let;
+        EXIT WHEN letCur%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE('Plane with serial number ' || data_from_let.SERIOVE_CISLO || ' is conducted by organisation ' || data_from_let.DICH);
+    END LOOP;
+    --CLOSE letCur;
+EXCEPTION
+    WHEN spatny_dich THEN
+        DBMS_OUTPUT.PUT_LINE('dich is should started from CZ');
+        CLOSE letCur;
+END;
+/
+--dobra funcke
+call test_proc('592','CZ78465632');
+--funcke s chybou
+call test_proc('592','CY78465632');
