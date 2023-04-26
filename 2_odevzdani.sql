@@ -11,6 +11,22 @@ BEGIN
   END LOOP;
 END;
 
+BEGIN
+  FOR cur_triger IN
+    (SELECT * FROM ALL_TRIGGERS
+    WHERE OWNER = 'XVETLU00' OR OWNER = 'XVORSH00')
+    LOOP
+        BEGIN
+            EXECUTE IMMEDIATE 'DROP TRIGGER ' || cur_triger.TRIGGER_NAME;
+        EXCEPTION
+            WHEN OTHERS THEN
+                IF SQLCODE != -942 THEN
+                    RAISE;
+                END IF;
+        END;
+  END LOOP;
+END;
+
 CREATE TABLE obec(
 
     o_cislo INTEGER PRIMARY KEY NOT NULL,
