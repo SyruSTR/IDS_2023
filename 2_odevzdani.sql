@@ -593,3 +593,23 @@ end;
 call test_proc2(53);
 -- 0 rows
 call test_proc2(54);
+
+WITH reservation_stats AS (
+  SELECT
+    Letenka.Stav,
+    COUNT(*) AS num_reservations,
+    SUM(CASE WHEN Letenka.Stav = 'Confirmed' THEN Cena END) AS revenue_confirmed,
+    SUM (CASE WHEN Letenka.Stav = 'Not confirmed' THEN Cena END) AS revenue_not_confirmed
+  FROM
+    Rezervace
+    JOIN Letenka ON Rezervace.Rezervace_Cislo = Letenka.Rezervace_Cislo
+  GROUP BY Letenka.Stav
+)
+SELECT
+  Stav,
+  num_reservations,
+  revenue_confirmed,
+  revenue_not_confirmed
+FROM
+  reservation_stats
+ORDER BY Stav;
