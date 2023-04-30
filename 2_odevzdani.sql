@@ -615,3 +615,12 @@ FROM
 ORDER BY Stav;
 GRANT ALL ON Spolecnost TO XVETLU00;
 GRANT ALL ON Letadlo TO XVETLU00;
+
+-- material view
+CREATE MATERIALIZED VIEW letadlo_mv
+BUILD IMMEDIATE
+REFRESH FORCE
+ON DEMAND
+AS
+SELECT l.Seriove_cislo, l.Typ_letadla, s.nazev FROM XBORSH00.LETADLO l
+    left join XBORSH00.Spolecnost s ON l.dich = s.dich;
