@@ -613,3 +613,5 @@ SELECT
 FROM
   reservation_stats
 ORDER BY Stav;
+GRANT ALL ON Spolecnost TO XVETLU00;
+GRANT ALL ON Letadlo TO XVETLU00;
