@@ -550,3 +550,46 @@ END;
 call test_proc('592','CZ78465632');
 --funcke s chybou
 call test_proc('592','CY78465632');
+
+create procedure test_proc2(
+    cislo_letiste_odletu LETOVY_ITINERAR.letiste_odletu%type
+)
+as
+    pocet_letu number;
+    cursor lt_cursor is (
+    select
+        lt.DATUM_A_CAS_PRILETU,
+        lt.DATUM_A_CAS_ODLETU,
+        l.NAZEV, l.KOD,
+        extract(minute from lt.DATUM_A_CAS_PRILETU) - extract(minute from lt.DATUM_A_CAS_ODLETU) as hourstofly
+    from LETOVY_ITINERAR lt
+        left join LETISTE l on lt.LETISTE_ODLETU = l.L_CISLO
+        where lt.LETISTE_ODLETU = cislo_letiste_odletu
+    );
+    var lt_cursor%rowtype;
+begin
+    pocet_letu := 0;
+    open lt_cursor;
+    
+    loop
+        FETCH lt_cursor INTO var;
+        exit when lt_cursor%notfound;
+
+        DBMS_OUTPUT.PUT_LINE('The flight from the city ' || var.NAZEV || '('|| var.KOD || ') will last ' || var.hourstofly || ' hours, departing at '|| var.DATUM_A_CAS_ODLETU || ' hours, arriving at ' || var.DATUM_A_CAS_PRILETU);
+        pocet_letu := pocet_letu + 1;
+    end loop;
+    
+    IF pocet_letu < 1 THEN
+        DBMS_OUTPUT.PUT_LINE('Dont have flight from this City');
+    end if;
+    
+    close lt_cursor;
+EXCEPTION
+    WHEN OTHERS THEN
+        close lt_cursor;
+end;
+/
+-- 2 rows
+call test_proc2(53);
+-- 0 rows
+call test_proc2(54);
