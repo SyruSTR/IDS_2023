@@ -143,6 +143,8 @@ CREATE TABLE Letadlo (
 
 );
 
+CREATE INDEX Idx_Letadlo ON Letadlo (Typ_letadla);
+
 CREATE TABLE Let (
 
     Let_cislo INTEGER NOT NULL PRIMARY KEY,
@@ -155,6 +157,8 @@ CREATE TABLE Let (
     FOREIGN KEY (DICH) REFERENCES Spolecnost (DICH)
 
 );
+
+CREATE INDEX Idx_Let ON Let(DICH);
 
 CREATE TABLE Palubni_Listek (
 
@@ -510,7 +514,40 @@ END;
 INSERT INTO Registrovana_osoba (Osoba_Cislo, Telefon, Email, Heslo, Token, Metoda_platby)
 VALUES ('3', '+5578345629', 'invalidemail@', 'password', 'token', 'Union Pay');
 
-DROP TRIGGER T_Registrace_email;
+-- Select dotaz pro demonstrci spravnosti pouziti Indexu
+-- Vybirame vsechna letadla s typem 'Passenger'
+-- Bez pouziti Indexu tento dotaz bude proveden v rozmezi 200-400 ms
+-- S indexem interval je 109-148 ms
+SELECT COUNT (*)
+FROM Letadlo
+WHERE Typ_letadla = 'Passenger';
+
+DROP INDEX Idx_Letadlo;
+
+-- Pouziti EXPLAIN PLAN
+
+-- Vybirame kolik letu provadi specifikovana spolecnost a cisla letenek na techto letech
+-- Pro urychleni provedeni EXPLAIN PLAN byl zaveden index Idx_Let pro DICH spolecnosti
+-- EXPLAIN PLAN zacne tim, ze najde indexy, ktere byly aplikovany na tabulku Let (pro DICH)
+-- Pak zjisti, ze podminka pro specifikovany DICH splnena dvema radky (coz je urceno podle indexu)
+-- Dale prejde do tabulky Palubni_listek, kde jsou 4 radky
+-- Potom budou provedeny Join a Group By a nakonec cely Select Dotaz
+SELECT p.Letenka_Cislo, COUNT (l.Let_cislo) AS pocet_letu
+FROM Let l
+JOIN Palubni_Listek p ON l.Let_cislo = p.Let_cislo
+WHERE DICH = 'CZ64532891'
+GROUP BY p.Letenka_Cislo;
+
+EXPLAIN PLAN FOR
+SELECT p.Letenka_Cislo, COUNT (l.Let_cislo) AS pocet_letu
+FROM Let l
+JOIN Palubni_Listek p ON l.Let_cislo = p.Let_cislo
+WHERE DICH = 'CZ64532891'
+GROUP BY p.Letenka_Cislo;
+
+SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
+
+DROP INDEX Idx_Let;
 
 
 create PROCEDURE test_proc(
@@ -594,25 +631,26 @@ call test_proc2(53);
 -- 0 rows
 call test_proc2(54);
 
-WITH reservation_stats AS (
+WITH Rezervace_stats AS (
   SELECT
     Letenka.Stav,
-    COUNT(*) AS num_reservations,
-    SUM(CASE WHEN Letenka.Stav = 'Confirmed' THEN Cena END) AS revenue_confirmed,
-    SUM (CASE WHEN Letenka.Stav = 'Not confirmed' THEN Cena END) AS revenue_not_confirmed
+    COUNT(*) AS pocet_rezervaci,
+    SUM(CASE WHEN Letenka.Stav = 'Confirmed' THEN Cena END) AS suma_potvrzenych_letenek,
+    SUM (CASE WHEN Letenka.Stav = 'Not confirmed' THEN Cena END) AS suma_nepotvrzenych_letenek
   FROM
     Rezervace
     JOIN Letenka ON Rezervace.Rezervace_Cislo = Letenka.Rezervace_Cislo
   GROUP BY Letenka.Stav
 )
 SELECT
-  Stav,
-  num_reservations,
-  revenue_confirmed,
-  revenue_not_confirmed
+    Stav,
+    pocet_rezervaci,
+    suma_potvrzenych_letenek,
+    suma_nepotvrzenych_letenek
 FROM
-  reservation_stats
+  Rezervace_stats
 ORDER BY Stav;
+
 GRANT ALL ON Spolecnost TO XVETLU00;
 GRANT ALL ON Letadlo TO XVETLU00;
 
