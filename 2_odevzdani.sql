@@ -302,15 +302,15 @@ UNION
 SELECT '5', '5', 'Reserved' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Rezervace WHERE Rezervace_Cislo = '5');
 
 INSERT INTO Letenka (Letenka_Cislo, Rezervace_Cislo, Cena, Stav, Covid_doklad)
-SELECT '1', '1', '5000', 'Printed', 'Attached' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Letenka WHERE Letenka_Cislo = '1')
+SELECT '1', '1', '5000', 'Confirmed', 'Attached' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Letenka WHERE Letenka_Cislo = '1')
 UNION
-SELECT '2', '2', '7635', 'Unprinted', 'Attached' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Letenka WHERE Letenka_Cislo = '2')
+SELECT '2', '2', '7635', 'Not confirmed', 'Attached' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Letenka WHERE Letenka_Cislo = '2')
 UNION
-SELECT '3', '3', '6345', 'Unprinted', 'Unattached' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Letenka WHERE Letenka_Cislo = '3')
+SELECT '3', '3', '6345', 'Not confirmed', 'Unattached' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Letenka WHERE Letenka_Cislo = '3')
 UNION
-SELECT '4', '4', '4200', 'Printed', 'Unattached' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Letenka WHERE Letenka_Cislo = '4')
+SELECT '4', '4', '4200', 'Confirmed', 'Unattached' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Letenka WHERE Letenka_Cislo = '4')
 UNION
-SELECT '5', '5', '9000', 'Printed', 'Attached' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Letenka WHERE Letenka_Cislo = '5');
+SELECT '5', '5', '9000', 'Confirmed', 'Attached' FROM dual WHERE NOT EXISTS (SELECT 1 FROM Letenka WHERE Letenka_Cislo = '5');
 
 INSERT INTO obec (o_cislo, nazev)
 SELECT '15', 'Doriat' FROM dual WHERE NOT EXISTS (SELECT 1 FROM obec WHERE o_cislo = '15')
