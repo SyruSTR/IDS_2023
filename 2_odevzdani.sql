@@ -528,10 +528,12 @@ DROP INDEX Idx_Letadlo;
 
 -- Vybirame kolik letu provadi specifikovana spolecnost a cisla letenek na techto letech
 -- Pro urychleni provedeni EXPLAIN PLAN byl zaveden index Idx_Let pro DICH spolecnosti
--- EXPLAIN PLAN zacne tim, ze najde indexy, ktere byly aplikovany na tabulku Let (pro DICH)
--- Pak zjisti, ze podminka pro specifikovany DICH splnena dvema radky (coz je urceno podle indexu)
--- Dale prejde do tabulky Palubni_listek, kde jsou 4 radky
--- Potom budou provedeny Join a Group By a nakonec cely Select Dotaz
+-- Prvni operaci je SELECT STATEMENT, ktery oznacuje, ze DBMS ziska data z jedne nebo vice tabulek.
+-- Dalsi operaci je HASH GROUP BY, ktera indikuje, ze DBMS bude seskupovat data na zaklade hodnoty sloupce p.Letenka_Cislo.
+-- Treti operaci je HASH JOIN, coz znamena, ze DBMS spoji dve tabulky, Let a Palubni_Listek, pomoci algoritmu hash join.
+-- Ctvrta operace je TABLE ACCESS BY INDEX ROWID BATCHED, coz znamena, ze DBMS ziska data z tabulky LET pomoci indexu.
+-- Pata operace je INDEX RANGE SCAN, coz znamena, ze DBMS prohleda index, aby nasel radky, ktere splnuji podminku dotazu.
+-- Posledni operace je TABLE ACCESS FULL, kde DBMS ziska vsechna data z tabulky Palubni_Listek.
 SELECT p.Letenka_Cislo, COUNT (l.Let_cislo) AS pocet_letu
 FROM Let l
 JOIN Palubni_Listek p ON l.Let_cislo = p.Let_cislo
